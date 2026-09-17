@@ -1,0 +1,289 @@
+{
+  "realm": "ecommerce",
+  "enabled": true,
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      { "name": "ADMIN", "description": "Acceso completo de escritura al catálogo (backoffice)" },
+      { "name": "CUSTOMER", "description": "Consumidor del storefront" },
+      { "name": "SELLER", "description": "Vendedor (futuro: gestión de su propio catálogo)" },
+      { "name": "SUPPORT", "description": "Soporte con acceso de solo lectura" }
+    ]
+  },
+  "scopeMappings": [
+    {
+      "client": "ecommerce-api",
+      "roles": ["ADMIN", "CUSTOMER", "SELLER", "SUPPORT"]
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "roles",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${rolesScopeConsentText}"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "user.attribute": "foo",
+            "multivalued": "true"
+          }
+        },
+        {
+          "name": "audience resolve",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-resolve-mapper",
+          "consentRequired": false,
+          "config": {}
+        },
+        {
+          "name": "client roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "resource_access.${client_id}.roles",
+            "multivalued": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "profile",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${profileScopeConsentText}"
+      },
+      "protocolMappers": [
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "full name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-full-name-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "locale",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "locale",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "locale",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    },
+    {
+      "name": "email",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "${emailScopeConsentText}"
+      },
+      "protocolMappers": [
+        {
+          "name": "email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "email",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "email",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "email verified",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "emailVerified",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "email_verified",
+            "jsonType.label": "boolean"
+          }
+        }
+      ]
+    },
+    {
+      "name": "web-origins",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false",
+        "consent.screen.text": "${webOriginsScopeConsentText}"
+      },
+      "protocolMappers": [
+        {
+          "name": "allowed web origins",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-allowed-origins-mapper",
+          "consentRequired": false,
+          "config": {}
+        }
+      ]
+    },
+    {
+      "name": "catalog:read",
+      "description": "Acceso de lectura a catalog-service",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      }
+    },
+    {
+      "name": "catalog:write",
+      "description": "Acceso de escritura a catalog-service",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      }
+    },
+    {
+      "name": "aud-catalog-service",
+      "description": "Añade la audiencia catalog-service al token de acceso",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience-catalog-service",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "catalog-service",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "ecommerce-api",
+      "name": "catalog-service API (M2M)",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "ecommerce-api-client-secret-2026-Xy7k9Qz3W",
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["roles", "profile", "email", "web-origins", "catalog:read", "catalog:write", "aud-catalog-service"],
+      "optionalClientScopes": []
+    },
+    {
+      "clientId": "ecommerce-frontend",
+      "name": "Storefront (code + PKCE)",
+      "enabled": true,
+      "publicClient": true,
+      "fullScopeAllowed": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "clientAuthenticatorType": "client-public",
+      "protocol": "openid-connect",
+      "redirectUris": ["http://localhost:4200/*"],
+      "webOrigins": ["http://localhost:4200"],
+      "defaultClientScopes": ["roles", "profile", "email", "web-origins", "aud-catalog-service"],
+      "optionalClientScopes": []
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "Admin",
+      "email": "admin@ecommerce.local",
+      "credentials": [{ "type": "password", "value": "admin123", "temporary": false }],
+      "realmRoles": ["ADMIN"]
+    },
+    {
+      "username": "customer1",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Cliente",
+      "lastName": "Customer",
+      "email": "customer1@ecommerce.local",
+      "credentials": [{ "type": "password", "value": "customer123", "temporary": false }],
+      "realmRoles": ["CUSTOMER"]
+    },
+    {
+      "username": "seller1",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Vendedor",
+      "lastName": "Seller",
+      "email": "seller1@ecommerce.local",
+      "credentials": [{ "type": "password", "value": "seller123", "temporary": false }],
+      "realmRoles": ["SELLER"]
+    },
+    {
+      "username": "support1",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Soporte",
+      "lastName": "Support",
+      "email": "support1@ecommerce.local",
+      "credentials": [{ "type": "password", "value": "support123", "temporary": false }],
+      "realmRoles": ["SUPPORT"]
+    }
+  ]
+}

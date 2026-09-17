@@ -1,0 +1,21 @@
+# =============================================================================
+# keycloak-local — .gitignore
+# =============================================================================
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Secretos / entorno local (por si algún día se usan)
+.env
+.env.*
+!.env.example
+
+# Logs y temporales
+*.log
+*.tmp
+*.bak
+
+# Volúmenes o datos locales no versionados
+data/
+tmp/
