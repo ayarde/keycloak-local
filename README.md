@@ -112,7 +112,7 @@ curl -s -X POST http://localhost:8080/realms/ecommerce/protocol/openid-connect/t
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=password" \
   -d "client_id=ecommerce-api" \
-  -d "client_secret=ecommerce-api-client-secret-2026-Xy7k9Qz3W" \
+  -d "client_secret=you-api-client-secret-2026-Xy7k9Qz3W" \
   -d "username=customer1" \
   -d "password=customer123" \
   -d "scope=openid"
@@ -134,7 +134,7 @@ curl -s -X POST http://localhost:8080/realms/ecommerce/protocol/openid-connect/t
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=client_credentials" \
   -d "client_id=ecommerce-api" \
-  -d "client_secret=ecommerce-api-client-secret-2026-Xy7k9Qz3W"
+  -d "client_secret=you-api-client-secret-2026-Xy7k9Qz3W"
 ```
 
 El `access_token` resultante trae los scopes `catalog:read` y `catalog:write`
@@ -170,7 +170,7 @@ TOKEN=$(curl -s -X POST http://localhost:8080/realms/ecommerce/protocol/openid-c
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=password" \
   -d "client_id=ecommerce-api" \
-  -d "client_secret=ecommerce-api-client-secret-2026-Xy7k9Qz3W" \
+  -d "client_secret=you-api-client-secret-2026-Xy7k9Qz3W" \
   -d "username=customer1" \
   -d "password=customer123" \
   | python3 -c "import json,sys;print(json.load(sys.stdin)['access_token'])")
